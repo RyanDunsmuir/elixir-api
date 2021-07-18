@@ -6,7 +6,8 @@ defmodule CoverflexApi.Benefits.Product do
     field :name, :string
     field :price, :float
 
-    many_to_many :orders, CoverflexApi.Benefits.Order, join_through: "order_products"
+    has_many :orderproducts, Benefits.OrderProduct
+    has_many :orders, through: [:orderproducts, :order]
     timestamps()
   end
 

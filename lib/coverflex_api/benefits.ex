@@ -1,86 +1,90 @@
 defmodule CoverflexApi.Benefits do
-  @moduledoc """
-  The Benefits context.
-  """
-
   import Ecto.Query, warn: false
   alias CoverflexApi.Repo
 
   alias CoverflexApi.Benefits.Product
 
-  @doc """
-  Returns the list of products.
-
-  ## Examples
-
-      iex> list_products()
-      [%Product{}, ...]
-
-  """
   def list_products do
     Repo.all(Product)
   end
 
-  @doc """
-  Gets a single product.
-
-  Raises `Ecto.NoResultsError` if the Product does not exist.
-
-  ## Examples
-
-      iex> get_product!(123)
-      %Product{}
-
-      iex> get_product!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-
   alias CoverflexApi.Benefits.User
 
-  @doc """
-  Gets a single user.
-
-  Raises `Ecto.NoResultsError` if the User does not exist.
-
-  ## Examples
-
-      iex> get_user!(123)
-      %User{}
-
-      iex> get_user!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_user!(id), do: Repo.get!(User, id)
-
-  def get_by_username!(username) do
-    Repo.get_by(User, username: username)
-    # |> Repo.preload([:orders, :orderproducts])
+  def get_user!(id) do
+    User
+    |> Repo.get!(id)
+    |> Repo.preload(:orders)
   end
 
-  def get_user_products(user) do
-    Repo.preload(user, :orderproducts)
-    user.orderproducts
+  def get_by_username!(username) do
+    user =
+      User
+      |> Repo.get_by(username: username)
+      |> Repo.preload(:orders)
+
+    # validate_user(user)
+  end
+
+  def validate_user(user) do
+  end
+
+  def create_user(attrs \\ %{}) do
+    %User{}
+    |> User.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def fetch_products_for_order(order) do
+    # load orders orderproducts
+    Repo.preload(order, :orderproducts)
+    # iterate through order's orderproducts and get their products
+    orderproducts = order.orderproducts
+    productlist = []
+
+    Enum.map(orderproducts, fn orderproduct ->
+      # Repo.preload(orderproduct, :order)
+      # Repo.preload(orderproduct, :product)
+      productlist ++ orderproduct.product
+    end)
+
+    productlist
+  end
+
+  def get_products(user) do
+    # preload users orders
+    # load_user_orders(user)
+    # get orderproducts from the orders
+
+    Enum.map(user.orders, fn order -> fetch_products_for_order(order) end)
+    # store orderproducts in a variable
+    # orderproducts = user.orderproducts
+    # # iterate through the users orderproducts and return their associated products
+    # Enum.map(orderproducts, fn orderproduct -> get_order_product_product(orderproduct) end)
   end
 
   alias CoverflexApi.Benefits.Order
 
-  @doc """
-  Creates a order.
-
-  ## Examples
-
-      iex> create_order(%{field: value})
-      {:ok, %Order{}}
-
-      iex> create_order(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def create_order(attrs \\ %{}) do
     %Order{}
     |> Order.changeset(attrs)
     |> Repo.insert()
   end
+
+  alias CoverflexApi.Benefits.OrderProduct
+
+  def create_order_product(attrs \\ %{}) do
+    %OrderProduct{}
+    |> OrderProduct.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  # def get_order_product_product(orderproduct) do
+  #   load_order_product(orderproduct)
+  #   orderproduct.product
+  # end
+
+  # def load_order_product(orderproduct) do
+  #   Repo.preload(orderproduct, :orders)
+  #   Repo.preload(orderproduct, :products)
+  # end
 end

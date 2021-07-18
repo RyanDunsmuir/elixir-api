@@ -16,7 +16,7 @@ defmodule CoverflexApiWeb.UserView do
       user_id: user.username,
       data: %{
         balance: user.balance,
-        product_ids: []
+        product_ids: user.orders
         # product_ids: [CoverflexApi.Benefits.get_user_products(user)]
       }
     }

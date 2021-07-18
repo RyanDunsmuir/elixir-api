@@ -7,7 +7,8 @@ defmodule CoverflexApi.Benefits.Order do
 
     belongs_to(:user, CoverflexApi.Benefits.User)
 
-    many_to_many :products, CoverflexApi.Benefits.Product, join_through: "order_products"
+    has_many :orderproducts, Benefits.OrderProduct
+    has_many :products, through: [:orderproducts, :product]
 
     timestamps()
   end
