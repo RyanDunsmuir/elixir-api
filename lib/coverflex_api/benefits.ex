@@ -35,7 +35,7 @@ defmodule CoverflexApi.Benefits do
       ** (Ecto.NoResultsError)
 
   """
-  def get_product!(id), do: Repo.get!(Product, id)
+  def get_product!(name), do: Repo.get_by(Product, name: name)
 
   @doc """
   Creates a product.

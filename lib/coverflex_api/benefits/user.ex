@@ -3,8 +3,9 @@ defmodule CoverflexApi.Benefits.User do
   import Ecto.Changeset
 
   schema "users" do
-    field :balance, :float
-    field :username, :string
+    field(:balance, :float)
+    field(:username, :string)
+    field(:product_ids, {:array, :string}, default: [])
 
     has_many :orders, CoverflexApi.Benefits.Order
 
@@ -19,5 +20,8 @@ defmodule CoverflexApi.Benefits.User do
     user
     |> cast(attrs, [:username, :balance])
     |> validate_required([:username, :balance])
+  end
+
+  def products do
   end
 end
