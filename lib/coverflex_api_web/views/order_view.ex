@@ -10,8 +10,13 @@ defmodule CoverflexApiWeb.OrderView do
     %{order: render_one(order, OrderView, "order.json")}
   end
 
-  def render("order.json", %{order: order}) do
-    %{items: [], user_id: order.user.username}
+  def render("order.json", %{order: order, product_ids: product_ids}) do
+    %{
+      order: %{
+        order_id: order.id,
+        data: %{items: product_ids, total: order.total}
+      }
+    }
   end
 
   # render_many(order.products, OrderView, "items.json")
