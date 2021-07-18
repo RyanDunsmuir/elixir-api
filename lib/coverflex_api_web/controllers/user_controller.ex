@@ -12,7 +12,7 @@ defmodule CoverflexApiWeb.UserController do
     if user do
       render(conn, "show.json", user: user)
     else
-      user = Benefits.create_user(%{username: username, balance: 0})
+      user = Benefits.create_user(%{username: username, balance: 1000})
       render(conn, "show.json", user: user)
     end
   end

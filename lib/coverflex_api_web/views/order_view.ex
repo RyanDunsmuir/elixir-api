@@ -24,4 +24,18 @@ defmodule CoverflexApiWeb.OrderView do
   def render("items.json", %{order: order}) do
     %{items: render_many(order.products, OrderView, "items.json")}
   end
+
+  # error pages
+
+  def render("products_not_found.json", %{}) do
+    %{error: "products_not_found"}
+  end
+
+  def render("products_already_purchased.json", %{}) do
+    %{error: "products_already_purchased"}
+  end
+
+  def render("insufficient_balance.json", %{}) do
+    %{error: "insufficient_balance"}
+  end
 end
